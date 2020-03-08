@@ -7,7 +7,7 @@ void server::acceptThread() {
         auto clt = std::make_shared<client>(_io_context, std::move(socket));
         boost::recursive_mutex::scoped_lock lock{_mutex}; //unlock?
         _clients.push_back(clt);
-        BOOST_LOG_TRIVIAL(info) 
+        BOOST_LOG_TRIVIAL(info)
         << "Client connected: "
         << socket.remote_endpoint().address().to_string()
         << " Port: " << socket.remote_endpoint().port()
@@ -16,8 +16,7 @@ void server::acceptThread() {
 }
 
 void server::handleClientsThread() {
-    using namespace std::chrono_literals;
-    std::this_thread::sleep_for(1ms);
+    std::this_thread::sleep_for(std::chrono_literals::1ms);
     boost::asio::streambuf buffer{};
     while (true) {
         boost::recursive_mutex::scoped_lock lock{_mutex};
@@ -36,26 +35,26 @@ void server::handleClientsThread() {
                         login(client);
                     else if (message.find("clients", 0) != -1)
                         getClients(client);
-                    else 
+                    else
                         std::cout << "invalid msg: " << message << std::endl;
                     buffer.consume(buffer.size());
 
-                    std::this_thread::sleep_for(1ms);
+                    std::this_thread::sleep_for(std::chrono_literals::1ms);
                     client->setTime(std::move(time(NULL)));
-                    std::this_thread::sleep_for(1ms);
+                    std::this_thread::sleep_for(std::chrono_literals::1ms);
                     ping(client);
                     if (client->timed_out()) client->close();
                 } catch (std::runtime_error &exception) {
                     client->close();
                     BOOST_LOG_TRIVIAL(debug)
                     << "Client dissconected: "
-                    << client->getSocket().remote_endpoint().address().to_string()
+                    << client->getSocket().
+                               remote_endpoint().address().to_string()
                     << " Port: " << client->getSocket().remote_endpoint().port()
                     << std::endl;
                 }
             }
             for (auto it = _clients.begin(); it != _clients.end();) {
-
                 if ((*it)->isClose()) {
                     _clients.erase(it);
                     _clients_changed = true;
