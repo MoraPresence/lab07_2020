@@ -7,10 +7,11 @@ void server::acceptThread() {
         auto clt = std::make_shared<client>(_io_context, std::move(socket));
         boost::recursive_mutex::scoped_lock lock{_mutex}; //unlock?
         _clients.push_back(clt);
-        BOOST_LOG_TRIVIAL(info) << "Client connected: "
-                                << socket.remote_endpoint().address().to_string()
-                                << " Port: " << socket.remote_endpoint().port()
-                                << std::endl;
+        BOOST_LOG_TRIVIAL(info) 
+        << "Client connected: "
+        << socket.remote_endpoint().address().to_string()
+        << " Port: " << socket.remote_endpoint().port()
+        << std::endl;
     }
 }
 
@@ -35,7 +36,8 @@ void server::handleClientsThread() {
                         login(client);
                     else if (message.find("clients", 0) != -1)
                         getClients(client);
-                    else std::cout << "invalid msg: " << message << std::endl;
+                    else 
+                        std::cout << "invalid msg: " << message << std::endl;
                     buffer.consume(buffer.size());
 
                     std::this_thread::sleep_for(1ms);
@@ -45,13 +47,13 @@ void server::handleClientsThread() {
                     if (client->timed_out()) client->close();
                 } catch (std::runtime_error &exception) {
                     client->close();
-                    BOOST_LOG_TRIVIAL(debug) << "Client dissconected: "
-                                             << client->getSocket().remote_endpoint().address().to_string()
-                                             << " Port: " << client->getSocket().remote_endpoint().port()
-                                             << std::endl;
+                    BOOST_LOG_TRIVIAL(debug)
+                    << "Client dissconected: "
+                    << client->getSocket().remote_endpoint().address().to_string()
+                    << " Port: " << client->getSocket().remote_endpoint().port()
+                    << std::endl;
                 }
             }
-
             for (auto it = _clients.begin(); it != _clients.end();) {
 
                 if ((*it)->isClose()) {
@@ -106,7 +108,8 @@ void server::getClients(std::shared_ptr<client> &current_client) {
     for (auto &client : _clients) {
         out << "Adress: "
             << client->getSocket().remote_endpoint().address().to_string()
-            << " Port: " << client->getSocket().remote_endpoint().port() << " Name: " << client->getName() << std::endl;
+            << " Port: " << client->getSocket().remote_endpoint().port()
+            << " Name: " << client->getName() << std::endl;
     }
     write(current_client->getSocket(), buffer);
     buffer.consume(buffer.size());

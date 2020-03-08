@@ -2,9 +2,9 @@
 
 #ifndef INCLUDE_HEADER_HPP_
 #define INCLUDE_HEADER_HPP_
+#include <vector>
 #include <iostream>
 #include <boost/asio.hpp>
-#include "client.h"
 #include <boost/thread/pthread/recursive_mutex.hpp>
 #include <boost/thread/thread.hpp>
 #include <boost/log/trivial.hpp>
