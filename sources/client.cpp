@@ -33,7 +33,7 @@ void client::answerFromServer() {
                 login();
             else if (word.find("clients", 0) != -1)
                 getClients();
-            else 
+            else
                 std::cout << "invalid msg: " << word << std::endl;
             buffer.consume(buffer.size());
             static unsigned int rand = time(nullptr);

@@ -71,4 +71,4 @@ private:
     Resolver _resolver;
     time_t _lastTime;
 };
-#endif //INCLUDE_CLIENT_HPP
+#endif // INCLUDE_CLIENT_HPP_
