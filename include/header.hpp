@@ -2,6 +2,7 @@
 
 #ifndef INCLUDE_HEADER_HPP_
 #define INCLUDE_HEADER_HPP_
+#include <client.hpp>
 #include <vector>
 #include <iostream>
 #include <boost/asio.hpp>
