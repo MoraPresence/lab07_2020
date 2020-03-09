@@ -33,9 +33,11 @@ void client::answerFromServer() {
                 login();
             else if (word.find("clients", 0) != -1)
                 getClients();
-            else std::cout << "invalid msg: " << word << std::endl;
+            else 
+                std::cout << "invalid msg: " << word << std::endl;
             buffer.consume(buffer.size());
-            boost::this_thread::sleep(boost::posix_time::millisec(rand()%7000));
+			static unsigned int rand = time(nullptr);
+            boost::this_thread::sleep(boost::posix_time::millisec(rand_r(&rand)%7000));
             ping();
         } catch (std::runtime_error &exception) {
             this->stop();
@@ -95,8 +97,7 @@ void client::stop() {
 
 bool client::timed_out() const {
     time_t now = time(NULL);
-    long long ms = now - _lastTime;
-    return ms > 5000;
+    return (now - _lastTime) > 5000;
 }
 
 std::string client::getName() {

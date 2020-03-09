@@ -11,6 +11,7 @@
 #include <boost/log/support/date_time.hpp>
 #include <thread>
 #include <boost/thread/thread.hpp>
+#include <string>
 
 namespace ip = boost::asio::ip;
 using Context = boost::asio::io_context;
@@ -70,5 +71,4 @@ private:
     Resolver _resolver;
     time_t _lastTime;
 };
-
 #endif //INCLUDE_CLIENT_H
