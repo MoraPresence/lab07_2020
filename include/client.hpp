@@ -1,9 +1,7 @@
-//
-// Created by mora on 2/26/20.
-//
+// Copyright 2018 Your Name <your_email>
 
-#ifndef SERVER_CLIENT_H
-#define SERVER_CLIENT_H
+#ifndef INCLUDE_CLIENT_HPP_
+#define INCLUDE_CLIENT_HPP_
 
 #include <iostream>
 #include <boost/asio.hpp>
@@ -73,4 +71,4 @@ private:
     time_t _lastTime;
 };
 
-#endif //SERVER_CLIENT_H
+#endif //INCLUDE_CLIENT_H

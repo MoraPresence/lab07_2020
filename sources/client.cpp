@@ -1,17 +1,11 @@
-//
-// Created by mora on 2/22/20.
-//
+// Copyright 2018 Your Name <your_email>
 
-#include "client.h"
+#include <client.hpp>
 
 #define KICK_FROM_SERVER  -100
 
 void client::connect(const ip::tcp::endpoint &ep) {
     _socket.connect(ep);
-}
-
-void client::loop() {
-
 }
 
 void client::close() {
@@ -108,6 +102,3 @@ bool client::timed_out() const {
 std::string client::getName() {
     return _username;
 }
-
-
-
