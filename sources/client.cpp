@@ -36,8 +36,9 @@ void client::answerFromServer() {
             else 
                 std::cout << "invalid msg: " << word << std::endl;
             buffer.consume(buffer.size());
-			static unsigned int rand = time(nullptr);
-            boost::this_thread::sleep(boost::posix_time::millisec(rand_r(&rand)%7000));
+            static unsigned int rand = time(nullptr);
+            boost::this_thread::sleep(boost::posix_time
+                 ::millisec(rand_r(&rand)%7000));
             ping();
         } catch (std::runtime_error &exception) {
             this->stop();
