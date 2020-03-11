@@ -16,7 +16,7 @@ void server::acceptThread() {
 }
 
 void server::handleClientsThread() {
-    std::this_thread::sleep_for(std::chrono_literals::1ms);
+    std::this_thread::sleep_for(std::chrono_literals::operator""ms(1));
     boost::asio::streambuf buffer{};
     while (true) {
         boost::recursive_mutex::scoped_lock lock{_mutex};
@@ -31,9 +31,9 @@ void server::handleClientsThread() {
                     std::string message{std::istreambuf_iterator<char>{&buffer},
                                         std::istreambuf_iterator<char>{}};
 
-                    if (message.find("login", 0) != -1)
+                    if (message.find("login", 0) != (unsigned int)(-1))
                         login(client);
-                    else if (message.find("clients", 0) != -1)
+                    else if (message.find("clients", 0) != (unsigned int)(-1))
                         getClients(client);
                     else
                         std::cout << "invalid msg: " << message << std::endl;

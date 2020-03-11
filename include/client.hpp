@@ -67,7 +67,7 @@ private:
     std::string _username = "user";
     Socket _socket;
     bool _starrted;
-    std::shared_ptr<Context> _io_context = std::make_shared<Context>();;
+    std::shared_ptr<Context> _io_context = std::make_shared<Context>();
     Resolver _resolver;
     time_t _lastTime;
 };

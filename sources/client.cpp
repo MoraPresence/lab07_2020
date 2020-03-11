@@ -29,9 +29,9 @@ void client::answerFromServer() {
             word += "\r\n\r\n";
             out << word;
             write(this->getSocket(), buffer);
-            if (word.find("login", 0) != -1)
+            if (word.find("login", 0) != (unsigned int)(-1))
                 login();
-            else if (word.find("clients", 0) != -1)
+            else if (word.find("clients", 0) != (unsigned int)(-1))
                 getClients();
             else
                 std::cout << "invalid msg: " << word << std::endl;
