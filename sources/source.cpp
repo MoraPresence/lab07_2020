@@ -39,9 +39,9 @@ void server::handleClientsThread() {
                         std::cout << "invalid msg: " << message << std::endl;
                     buffer.consume(buffer.size());
 
-                    std::this_thread::sleep_for(std::chrono_literals::1ms);
+                    std::this_thread::sleep_for(std::chrono_literals::operator""ms(1));
                     client->setTime(std::move(time(NULL)));
-                    std::this_thread::sleep_for(std::chrono_literals::1ms);
+                    std::this_thread::sleep_for(std::chrono_literals::operator""ms(1));
                     ping(client);
                     if (client->timed_out()) client->close();
                 } catch (std::runtime_error &exception) {
