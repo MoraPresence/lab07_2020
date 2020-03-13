@@ -48,7 +48,7 @@ public:
 
     void mutexUnlock();
 
-    void setClientsStatus(bool &);
+    void setClientsStatus(bool);
 
 private:
     std::shared_ptr <Context> _io_context = std::make_shared<Context>();

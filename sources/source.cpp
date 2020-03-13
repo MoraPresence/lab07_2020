@@ -88,7 +88,7 @@ void server::mutexLock() {
     _mutex.lock();
 }
 
-void server::setClientsStatus(bool &status) {
+void server::setClientsStatus(bool status) {
     _clients_changed = status;
 }
 
