@@ -43,6 +43,10 @@ public:
 
     static void initLog();
 
+    void mutexLock();
+
+    void mutexUnlock();
+
 private:
     std::shared_ptr<Context> _io_context = std::make_shared<Context>();
     Endpoint _endpoint;

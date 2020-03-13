@@ -33,8 +33,9 @@ void server::handleClientsThread() {
                     boost::asio::streambuf buffer{};
                     read_until(client->getSocket(), buffer, "\n");
 
-                    std::string message{std::istreambuf_iterator < char > {&buffer},
-                                        std::istreambuf_iterator < char > {}};
+                    std::string message
+                            {std::istreambuf_iterator < char > {&buffer},
+                             std::istreambuf_iterator < char > {}};
 
                     if (message.find("login", 0) != (unsigned int) (-1))
                         login(client);
@@ -57,7 +58,8 @@ void server::handleClientsThread() {
                             << "Client dissconected: "
                             << client->getSocket().
                                     remote_endpoint().address().to_string()
-                            << " Port: " << client->getSocket().remote_endpoint().port()
+                            << " Port: " << client->getSocket()
+                                    .remote_endpoint().port()
                             << std::endl;
                 }
             }
@@ -76,6 +78,14 @@ void server::handleClientsThread() {
         _mutex.unlock;
         std::this_thread::sleep_for(std::chrono_literals::operator ""ms(1));
     }
+}
+
+void server::mutexUnlock() {
+    _mutex.lock();
+}
+
+void server::mutexLock() {
+    _mutex.lock();
 }
 
 void server::startServer() {
