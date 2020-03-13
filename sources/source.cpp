@@ -5,8 +5,10 @@ void server::acceptThread() {
     while (true) {
         Socket socket = _acceptor->accept();
         auto clt = std::make_shared<client>(_io_context, std::move(socket));
-        boost::recursive_mutex::scoped_lock lock{_mutex}; //unlock?
+        _mutex.lock();
         _clients.push_back(clt);
+		_clients_changed = true;
+		_mutex.unlock();
         BOOST_LOG_TRIVIAL(info)
         << "Client connected: "
         << socket.remote_endpoint().address().to_string()
@@ -17,15 +19,17 @@ void server::acceptThread() {
 
 void server::handleClientsThread() {
     std::this_thread::sleep_for(std::chrono_literals::operator""ms(1));
-    boost::asio::streambuf buffer{};
     while (true) {
-        boost::recursive_mutex::scoped_lock lock{_mutex};
+        _mutex.lock();
         if (!_clients.empty()) {
             for (auto &client : _clients) {
                 if (client->isClose()) {
                     continue;
                 }
+				if(_clients_changed)
+					continue;
                 try {
+					boost::asio::streambuf buffer{};
                     read_until(client->getSocket(), buffer, "\n");
 
                     std::string message{std::istreambuf_iterator<char>{&buffer},
@@ -56,6 +60,7 @@ void server::handleClientsThread() {
                     << std::endl;
                 }
             }
+			_clients_changed = false;
             for (auto it = _clients.begin(); it != _clients.end();) {
                 if ((*it)->isClose()) {
                     _clients.erase(it);
@@ -67,6 +72,8 @@ void server::handleClientsThread() {
                 }
             }
         }
+		_mutex.unlock;
+		std::this_thread::sleep_for(std::chrono_literals::operator""ms(1));
     }
 }
 
@@ -126,7 +133,7 @@ namespace sinks = boost::log::sinks;
 void server::initLog() {
     logging::add_file_log
             (
-                    keywords::file_name = "home/mora/Desktop/info.log",
+                    keywords::file_name = "/logs/info.log",
                     keywords::rotation_size = 256 * 1024 * 1024,
                     keywords::time_based_rotation =
                             sinks::file::rotation_at_time_point(0, 0, 0),
@@ -144,7 +151,7 @@ void server::initLog() {
 
     logging::add_file_log
             (
-                    keywords::file_name = "home/mora/Desktop/trace.log",
+                    keywords::file_name = "/logs/trace.log",
                     keywords::rotation_size = 256 * 1024 * 1024,
                     keywords::time_based_rotation = sinks::file
                     ::rotation_at_time_point(0, 0, 0),
@@ -160,7 +167,7 @@ void server::initLog() {
                                             << "> " << expr::smessage));
     logging::add_file_log
             (
-                    keywords::file_name = "home/mora/Desktop/debug.log",
+                    keywords::file_name = "/logs/debug.log",
                     keywords::rotation_size = 256 * 1024 * 1024,
                     keywords::time_based_rotation = sinks::file
                     ::rotation_at_time_point(0, 0, 0),

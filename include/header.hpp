@@ -48,7 +48,7 @@ private:
     Endpoint _endpoint;
     std::unique_ptr<Acceptor> _acceptor;
     std::vector<std::shared_ptr<client>> _clients;
-    boost::recursive_mutex _mutex;
+    std::mutex _mutex;
     bool _clients_changed = false;
 };
 #endif // INCLUDE_HEADER_HPP_
