@@ -1,24 +1,25 @@
 // Copyright 2018 Your Name <your_email>
 
 #include <header.hpp>
+
 void server::acceptThread() {
     while (true) {
         Socket socket = _acceptor->accept();
         auto clt = std::make_shared<client>(_io_context, std::move(socket));
         _mutex.lock();
         _clients.push_back(clt);
-		_clients_changed = true;
-		_mutex.unlock();
+        _clients_changed = true;
+        _mutex.unlock();
         BOOST_LOG_TRIVIAL(info)
-        << "Client connected: "
-        << socket.remote_endpoint().address().to_string()
-        << " Port: " << socket.remote_endpoint().port()
-        << std::endl;
+                << "Client connected: "
+                << socket.remote_endpoint().address().to_string()
+                << " Port: " << socket.remote_endpoint().port()
+                << std::endl;
     }
 }
 
 void server::handleClientsThread() {
-    std::this_thread::sleep_for(std::chrono_literals::operator""ms(1));
+    std::this_thread::sleep_for(std::chrono_literals::operator ""ms(1));
     while (true) {
         _mutex.lock();
         if (!_clients.empty()) {
@@ -26,41 +27,41 @@ void server::handleClientsThread() {
                 if (client->isClose()) {
                     continue;
                 }
-				if(_clients_changed)
-					continue;
+                if (_clients_changed)
+                    continue;
                 try {
-					boost::asio::streambuf buffer{};
+                    boost::asio::streambuf buffer{};
                     read_until(client->getSocket(), buffer, "\n");
 
-                    std::string message{std::istreambuf_iterator<char>{&buffer},
-                                        std::istreambuf_iterator<char>{}};
+                    std::string message{std::istreambuf_iterator < char > {&buffer},
+                                        std::istreambuf_iterator < char > {}};
 
-                    if (message.find("login", 0) != (unsigned int)(-1))
+                    if (message.find("login", 0) != (unsigned int) (-1))
                         login(client);
-                    else if (message.find("clients", 0) != (unsigned int)(-1))
+                    else if (message.find("clients", 0) != (unsigned int) (-1))
                         getClients(client);
                     else
                         std::cout << "invalid msg: " << message << std::endl;
                     buffer.consume(buffer.size());
 
                     std::this_thread::sleep_for(std::chrono_literals
-                                    ::operator""ms(1));
+                                                ::operator ""ms(1));
                     client->setTime(std::move(time(NULL)));
                     std::this_thread::sleep_for(std::chrono_literals
-                                    ::operator""ms(1));
+                                                ::operator ""ms(1));
                     ping(client);
                     if (client->timed_out()) client->close();
                 } catch (std::runtime_error &exception) {
                     client->close();
                     BOOST_LOG_TRIVIAL(debug)
-                    << "Client dissconected: "
-                    << client->getSocket().
-                               remote_endpoint().address().to_string()
-                    << " Port: " << client->getSocket().remote_endpoint().port()
-                    << std::endl;
+                            << "Client dissconected: "
+                            << client->getSocket().
+                                    remote_endpoint().address().to_string()
+                            << " Port: " << client->getSocket().remote_endpoint().port()
+                            << std::endl;
                 }
             }
-			_clients_changed = false;
+            _clients_changed = false;
             for (auto it = _clients.begin(); it != _clients.end();) {
                 if ((*it)->isClose()) {
                     _clients.erase(it);
@@ -72,8 +73,8 @@ void server::handleClientsThread() {
                 }
             }
         }
-		_mutex.unlock;
-		std::this_thread::sleep_for(std::chrono_literals::operator""ms(1));
+        _mutex.unlock;
+        std::this_thread::sleep_for(std::chrono_literals::operator ""ms(1));
     }
 }
 
@@ -84,11 +85,11 @@ void server::startServer() {
     th2.join();
 }
 
-void server::login(std::shared_ptr<client> &client) {
+void server::login(std::shared_ptr <client> &client) {
     boost::asio::streambuf buffer{};
     read_until(client->getSocket(), buffer, "\n");
-    std::string message{std::istreambuf_iterator<char>{&buffer},
-                        std::istreambuf_iterator<char>{}};
+    std::string message{std::istreambuf_iterator < char > {&buffer},
+                        std::istreambuf_iterator < char > {}};
     client->setName(message);
     buffer.consume(buffer.size());
     std::ostream out(&buffer);
@@ -97,11 +98,11 @@ void server::login(std::shared_ptr<client> &client) {
     buffer.consume(buffer.size());
 }
 
-void server::ping(std::shared_ptr<client> &client) {
+void server::ping(std::shared_ptr <client> &client) {
     boost::asio::streambuf buffer{};
     read_until(client->getSocket(), buffer, "\n");
-    std::string message{std::istreambuf_iterator<char>{&buffer},
-                        std::istreambuf_iterator<char>{}};
+    std::string message{std::istreambuf_iterator < char > {&buffer},
+                        std::istreambuf_iterator < char > {}};
     std::cout << message << std::endl;
     buffer.consume(buffer.size());
     std::ostream out(&buffer);
@@ -110,7 +111,7 @@ void server::ping(std::shared_ptr<client> &client) {
     buffer.consume(buffer.size());
 }
 
-void server::getClients(std::shared_ptr<client> &current_client) {
+void server::getClients(std::shared_ptr <client> &current_client) {
     boost::asio::streambuf buffer{};
     std::ostream out(&buffer);
     for (auto &client : _clients) {
