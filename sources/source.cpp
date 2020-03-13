@@ -6,10 +6,10 @@ void server::acceptThread() {
     while (true) {
         Socket socket = _acceptor->accept();
         auto clt = std::make_shared<client>(_io_context, std::move(socket));
-        _mutex.lock();
+        mutexLock();
         _clients.push_back(clt);
-        _clients_changed = true;
-        _mutex.unlock();
+        setClientsStatus(true);
+        mutexUnlock();
         BOOST_LOG_TRIVIAL(info)
                 << "Client connected: "
                 << socket.remote_endpoint().address().to_string()
@@ -21,7 +21,7 @@ void server::acceptThread() {
 void server::handleClientsThread() {
     std::this_thread::sleep_for(std::chrono_literals::operator ""ms(1));
     while (true) {
-        _mutex.lock();
+        mutexLock();
         if (!_clients.empty()) {
             for (auto &client : _clients) {
                 if (client->isClose()) {
@@ -63,11 +63,11 @@ void server::handleClientsThread() {
                             << std::endl;
                 }
             }
-            _clients_changed = false;
+            setClientsStatus(false);
             for (auto it = _clients.begin(); it != _clients.end();) {
                 if ((*it)->isClose()) {
                     _clients.erase(it);
-                    _clients_changed = true;
+                    setClientsStatus(true);
                     BOOST_LOG_TRIVIAL(info) << "Client changed: "
                                             << std::endl;
                 } else {
@@ -75,7 +75,7 @@ void server::handleClientsThread() {
                 }
             }
         }
-        _mutex.unlock;
+        mutexUnlock();
         std::this_thread::sleep_for(std::chrono_literals::operator ""ms(1));
     }
 }
@@ -86,6 +86,10 @@ void server::mutexUnlock() {
 
 void server::mutexLock() {
     _mutex.lock();
+}
+
+void server::setClientsStatus(bool &status) {
+    _clients_changed = status;
 }
 
 void server::startServer() {

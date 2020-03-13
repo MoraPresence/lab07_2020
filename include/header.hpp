@@ -2,6 +2,7 @@
 
 #ifndef INCLUDE_HEADER_HPP_
 #define INCLUDE_HEADER_HPP_
+
 #include <client.hpp>
 #include <vector>
 #include <iostream>
@@ -35,11 +36,11 @@ public:
 
     void startServer();
 
-    void login(std::shared_ptr<client> &);
+    void login(std::shared_ptr <client> &);
 
-    void ping(std::shared_ptr<client> &);
+    void ping(std::shared_ptr <client> &);
 
-    void getClients(std::shared_ptr<client> &);
+    void getClients(std::shared_ptr <client> &);
 
     static void initLog();
 
@@ -47,12 +48,15 @@ public:
 
     void mutexUnlock();
 
+    void setClientsStatus(bool &);
+
 private:
-    std::shared_ptr<Context> _io_context = std::make_shared<Context>();
+    std::shared_ptr <Context> _io_context = std::make_shared<Context>();
     Endpoint _endpoint;
-    std::unique_ptr<Acceptor> _acceptor;
-    std::vector<std::shared_ptr<client>> _clients;
+    std::unique_ptr <Acceptor> _acceptor;
+    std::vector <std::shared_ptr<client>> _clients;
     std::mutex _mutex;
     bool _clients_changed = false;
 };
+
 #endif // INCLUDE_HEADER_HPP_
